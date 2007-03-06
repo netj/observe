@@ -1,0 +1,15 @@
+#!/usr/bin/env observe
+
+hook gcc cpp cc as ld g++:
+    #before=
+    #replace=
+    after_success=track-compiler "$@"
+    #after_failure=
+    #after=
+
+hook mv cp:
+    after_success=track-alias "$@"
+
+hook rm:
+    after_success=forget "$@"
+
