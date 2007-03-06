@@ -41,10 +41,15 @@
 
 Hooks=$1; shift
 HookDir="$Hooks.d"
-mkdir -p "$HookDir"
+if [ -d "$HookDir" ]; then
+    EmptyHookDir=false
+else
+    mkdir -p "$HookDir"
+    EmptyHookDir=true
+fi
 HookDir=`cd "$HookDir" && pwd`
 
-if [ "$Hooks" -nt "$HookDir" ]; then
+if $EmptyHookDir || [ "$Hooks" -nt "$HookDir" ]; then
     # generate hook dir from $Hooks
     cat "$Hooks" |
     while read; do
