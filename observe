@@ -15,8 +15,8 @@
 	  hook <command-to-hook> [...]:
 	      before=<command to run before the original>
 	      replace=<command to run instead>
-	      after_success=<command to run when succeeds>
-	      after_failure=<command to run when fails>
+	      success=<command to run when succeeds>
+	      failure=<command to run when fails>
 	      after=<command to run after the original>
 	  
 	  [...]
@@ -26,13 +26,13 @@
 	  -->8--
 	  #!/usr/bin/env observe
 	  hook gcc cpp cc as ld g++:
-	      after_success=track-compiler "\$@"
+	      success=track-compiler "\$@"
 	  
 	  hook mv cp:
-	      after_success=track-alias "\$@"
+	      success=track-alias "\$@"
 	  
 	  hook rm:
-	      after_success=forget "\$@"
+	      success=forget "\$@"
 	  
 	  --8<--
 	EOF
@@ -47,7 +47,7 @@ else
     mkdir -p "$HookDir"
     EmptyHookDir=true
 fi
-HookDir=`cd "$HookDir" && pwd`
+HookDir=`cd "$HookDir" && pwd || echo "$HookDir"`
 
 if $EmptyHookDir || [ "$Hooks" -nt "$HookDir" ]; then
     # generate hook dir from $Hooks
@@ -76,9 +76,9 @@ if $EmptyHookDir || [ "$Hooks" -nt "$HookDir" ]; then
 		PATH=\${PATH//:${HookDir//\//\\/}:/:}
 		$before
 		if $replace; then
-		    ${after_success:-:}
+		    ${success:-:}
 		else
-		    ${after_failure:-:}
+		    ${failure:-:}
 		fi
 		$after
 		EOF
@@ -88,8 +88,8 @@ if $EmptyHookDir || [ "$Hooks" -nt "$HookDir" ]; then
             cmds=
             before=
             replace=
-            after_success=
-            after_failure=
+            success=
+            failure=
             after=
             ;;
         esac
