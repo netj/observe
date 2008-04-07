@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if hook=`"$OBSERVE_HOOKS/match" "$1"`; then
+    cmd="$OBSERVE_HOOKS/$hook"
+else
+    # no matching hook, run it back in an instrumented environment
+    cmd=run
+fi
+
+exec "$cmd" "$@"

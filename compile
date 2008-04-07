@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+
+rule=$1; shift
+hooks=$1; shift
+
+rm -rf "$hooks"
+mkdir -p "$hooks"
+
+matcher="$hooks/match"
+cat >"$matcher" <<EOF
+#!/bin/sh
+case "\$1" in
+EOF
+chmod +x "$matcher"
+
+# generate matcher and hooks
+dirty=false
+flush() {
+    $dirty || return
+    hook="$hooks/hook$id"
+    cat >"$hook" <<-EOF
+	#!/bin/sh
+	$before
+	${replace:-"\$@"}
+	c=\$?
+	if [ \$c -eq 0 ]; then
+	    ${success:-:}
+	else
+	    ${failure:-:}
+	fi
+	$after
+	exit \$c
+	EOF
+    chmod +x "$hook"
+    dirty=false
+}
+id=0
+while read; do
+    case "$REPLY" in
+        # read a new hook rule
+        "hook "*)
+        flush
+        # increment hook id
+        let id++
+        # append commands to matcher
+        cmds=$REPLY
+        cmds=${cmds#hook }
+        cmds=${cmds%:*}
+        patt=${cmds// /|}
+        echo "$patt) echo hook$id ;;" >>"$matcher"
+        # reset event handlers
+        before=
+        replace=
+        success=
+        failure=
+        after=
+        dirty=true
+        ;;
+        *=*)
+        # remember an event handler
+        event=${REPLY%%=*}
+        handler=${REPLY#*=}
+        eval "$event='${handler//"'"/"'\\''"}'"
+        ;;
+    esac
+done <"$rule"
+flush
+
+cat >>"$matcher" <<EOF
+*) false ;;
+esac
+EOF

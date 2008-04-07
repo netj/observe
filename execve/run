@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# add libobserve.so to LD_PRELOAD
+OBSERVE_HOOKS_LIBC="$OBSERVE_ROOT/execve/libobserve.so"
+export OBSERVE_HOOKS_LIBC
+LD_PRELOAD="$OBSERVE_HOOKS_LIBC${LD_PRELOAD:+":$LD_PRELOAD"}"
+export LD_PRELOAD
+
+# and run given command
+exec "$@"

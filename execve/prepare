@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# we need libobserve.so
+[ -x "$OBSERVE_ROOT/execve/libobserve.so" ]

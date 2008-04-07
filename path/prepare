@@ -1,0 +1,22 @@
+#!/bin/sh
+
+OBSERVE_HOOKS_EXES="$OBSERVE_HOOKS/exes"
+mkdir -p "$OBSERVE_HOOKS_EXES"
+
+# generate hook dir from $OBSERVE_RULE
+cat "$OBSERVE_RULE" |
+while read; do
+    case "$REPLY" in
+        # read a hook rule
+        "hook "*)
+        cmds=$REPLY
+        cmds=${cmds#hook }
+        cmds=${cmds%:*}
+        # place an hook executable
+        for cmd in $cmds; do
+            [ "$cmd" != handle ] || continue
+            ln -sfn "$OBSERVE_ROOT/path/hook" "$OBSERVE_HOOKS_EXES/$cmd"
+        done
+        ;;
+    esac
+done

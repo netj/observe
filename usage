@@ -1,0 +1,33 @@
+#!/bin/sh
+cat <<-EOF
+observe -- a process invocation observer
+Usage:
+  observe <hook-file> <command>
+
+Hook rules file format:
+  -->8--
+  #!/usr/bin/env observe
+  hook <command-to-hook> [...]:
+      before=<command to run before the original>
+      replace=<command to run instead>
+      success=<command to run when succeeds>
+      failure=<command to run when fails>
+      after=<command to run after the original>
+  
+  [...]
+  --8<--
+
+An example:
+  -->8--
+  #!/usr/bin/env observe
+  hook gcc cpp cc as ld g++:
+      success=track-compiler "\$@"
+  
+  hook mv cp:
+      success=track-alias "\$@"
+  
+  hook rm:
+      success=forget "\$@"
+  
+  --8<--
+EOF

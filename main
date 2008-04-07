@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# observe -- a process invocation observer
+# Author: Jaeho Shin <netj@sparcs.org>
+# Created: 2007-01-19
+
+OBSERVE=`readlink -f "$0"`
+OBSERVE_ROOT=`dirname "$OBSERVE"`
+: ${OBSERVE_DRIVER:=path}
+PATH="$OBSERVE_ROOT/$OBSERVE_DRIVER:$OBSERVE_ROOT:$PATH"
+
+# show usage
+if [ $# -lt 1 ]; then
+    usage
+    exit
+fi
+
+OBSERVE_RULE=$1; shift
+OBSERVE_HOOKS=`mktemp -d /tmp/observe.XXXXXX`
+trap "rm -rf $OBSERVE_HOOKS" EXIT
+
+OBSERVE_LEVEL=$((${OBSERVE_LEVEL:-0} + 1))
+
+export OBSERVE_ROOT OBSERVE_LEVEL OBSERVE_RULE OBSERVE_HOOKS
+
+# compile OBSERVE_RULE to OBSERVE_HOOKS
+compile "$OBSERVE_RULE" "$OBSERVE_HOOKS"
+
+# run in an instrumented environment
+prepare
+run "$@"
+#TODO cleanup
