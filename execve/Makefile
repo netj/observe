@@ -3,5 +3,8 @@ CFLAGS+=-fPIC -DLIBC='"$(LIBC)"'
 CFLAGS+=-g
 
 libobserve.so: execve.o
-	$(LD) -o $@ -shared $^ -ldl
+	$(CC) -o $@ -shared $^ -lc -ldl
 
+.PHONY: clean
+clean:
+	rm -f libobserve.so *.o

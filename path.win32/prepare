@@ -13,10 +13,10 @@ while read; do
         cmds=${cmds#hook }
         cmds=${cmds%:*}
         # place an hook executable
-        # TODO: copy first and hardlink others
+        # TODO use hardlinks
         for cmd in $cmds; do
             [ "$cmd" != handle ] || continue
-            ln -sfn "$OBSERVE_ROOT/path/hook" "$OBSERVE_HOOKS_EXES/$cmd"
+            cp -pf "$OBSERVE_ROOT/path.win32/hook.exe" "$OBSERVE_HOOKS_EXES/$cmd.exe"
         done
         ;;
     esac

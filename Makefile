@@ -7,40 +7,87 @@ EXECS=\
 	main			\
 	compile			\
 	handle			\
-	execve/prepare		\
-	execve/run		\
-	execve/libobserve.so	\
-	execve/hook		\
-	path/prepare		\
-	path/run		\
-	path/hook		\
 	usage			\
 	version			\
+	default			\
 	#
 FILES=\
 	#
 
-observe-$(VERSION).sh: $(EXECS) $(FILES)
+.PHONY: all clean driver
+all: driver observe
+driver: default
+clean:
+	rm -f observe version default
+
+# choose platform specific drivers
+UNAME=$(shell uname)
+ifneq ($(findstring $(UNAME),CYGWIN%),)
+    ENABLE_PATH_WIN32=true
+    default=
+else
+    ENABLE_PATH_POSIX=true
+    DEFAULT_DRIVER=path
+    ifneq ($(findstring $(shell uname),Linux SunOS),)
+        ENABLE_EXECVE=true
+        DEFAULT_DRIVER=execve
+    endif
+endif
+
+# POSIX PATH instrumentation driver
+ifdef ENABLE_PATH_POSIX
+EXECS+=\
+	path/prepare		\
+	path/run		\
+	path/hook		\
+	#
+endif
+
+# Windows PATH instrumentation driver
+ifdef ENABLE_PATH_WIN32
+EXECS+=\
+	path.win32/prepare	\
+	path.win32/run		\
+	path.win32/hook.exe	\
+	path.win32/hook.sh	\
+	#
+driver: path.win32-driver
+path.win32-driver:
+	$(MAKE) -C path.win32
+clean: path.win32-clean
+path.win32-clean:
+	$(MAKE) -C path.win32 clean
+endif
+
+# libc's execve(2) replacement driver
+ifdef ENABLE_EXECVE
+EXECS+=\
+	execve/prepare		\
+	execve/run		\
+	execve/libobserve.so	\
+	execve/hook		\
+	#
+driver: execve-driver
+execve-driver:
+	$(MAKE) -C execve
+clean: execve-clean
+execve-clean:
+	$(MAKE) -C execve clean
+endif
+
+
+# main build rule
+observe: $(EXECS) $(FILES)
 	chmod +x $(EXECS)
 	pojang $(EXECS) $(FILES) >$@
 	chmod +x $@
 
-version:
+default:
+ifdef DEFAULT_DRIVER
+	ln -sfn $(DEFAULT_DRIVER) default
+endif
+
+version: Makefile
 	{ echo "#!/bin/sh"; echo observe-$(VERSION); } >$@
 	chmod +x $@
-
-
-# libc execve driver
-execve/libobserve.so:
-	$(MAKE) -C execve
-
-
-# PATH driver
-ifeq ($(shell uname),CYGWIN*)
-path/hook: path/hook.c
-	$(CC) -o $@ $^
-else
-path/hook: path/hook.sh
-	install -m a+rx $< $@
-endif
 

@@ -5,7 +5,7 @@
 
 OBSERVE=`readlink -f "$0"`
 OBSERVE_ROOT=`dirname "$OBSERVE"`
-: ${OBSERVE_DRIVER:=path}
+: ${OBSERVE_DRIVER:=default}
 PATH="$OBSERVE_ROOT/$OBSERVE_DRIVER:$OBSERVE_ROOT:$PATH"
 
 # show usage
@@ -16,7 +16,7 @@ fi
 
 OBSERVE_RULE=$1; shift
 OBSERVE_HOOKS=`mktemp -d /tmp/observe.XXXXXX`
-trap "rm -rf $OBSERVE_HOOKS" EXIT
+trap "rm -rf $OBSERVE_HOOKS >&2" EXIT
 
 OBSERVE_LEVEL=$((${OBSERVE_LEVEL:-0} + 1))
 

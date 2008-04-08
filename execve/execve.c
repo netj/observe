@@ -21,7 +21,7 @@ int execve(const char *filename, char *const argv[], char *const envp[]) {
                 // insert filename into argv
                 int argc = 0;
                 while (argv[argc++] != NULL);
-                char **const newargv = (char **)calloc(argc + 2, sizeof(char *));
+                char ** newargv = (char **)calloc(argc + 2, sizeof(char *));
                 newargv[0] = filename;
                 int i;
                 for (i=0; i<argc; i++)
