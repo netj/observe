@@ -20,15 +20,16 @@ driver: default
 clean:
 	rm -f observe version default
 
+
 # choose platform specific drivers
 UNAME=$(shell uname)
-ifneq ($(findstring $(UNAME),CYGWIN%),)
+ifneq ($(filter CYGWIN%,$(UNAME)),)
     ENABLE_PATH_WIN32=true
-    default=
+    DEFAULT_DRIVER=path.win32
 else
     ENABLE_PATH_POSIX=true
     DEFAULT_DRIVER=path
-    ifneq ($(findstring $(shell uname),Linux SunOS),)
+    ifneq ($(filter Linux SunOS,$(UNAME)),)
         ENABLE_EXECVE=true
         DEFAULT_DRIVER=execve
     endif

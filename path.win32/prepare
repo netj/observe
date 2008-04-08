@@ -16,7 +16,7 @@ while read; do
         # TODO use hardlinks
         for cmd in $cmds; do
             [ "$cmd" != handle ] || continue
-            cp -pf "$OBSERVE_ROOT/path.win32/hook.exe" "$OBSERVE_HOOKS_EXES/$cmd.exe"
+            cp -pf "$OBSERVE_ROOT/path.win32/hook.exe" "$OBSERVE_HOOKS_EXES/$cmd"
         done
         ;;
     esac
