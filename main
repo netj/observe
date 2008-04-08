@@ -8,6 +8,15 @@ OBSERVE_ROOT=`dirname "$OBSERVE"`
 : ${OBSERVE_DRIVER:=default}
 PATH="$OBSERVE_ROOT/$OBSERVE_DRIVER:$OBSERVE_ROOT:$PATH"
 
+while getopts "v" o; do
+    case "$o" in
+        v)
+        version; exit
+        ;;
+    esac
+done
+shift $(($OPTIND - 1))
+
 # show usage
 if [ $# -lt 1 ]; then
     usage

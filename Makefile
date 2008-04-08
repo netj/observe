@@ -2,6 +2,7 @@
 # Author: Jaeho Shin <netj@sparcs.org>
 # Created: 2008-04-07
 VERSION=1.0
+DRIVERS=
 
 EXECS=\
 	main			\
@@ -24,19 +25,19 @@ clean:
 # choose platform specific drivers
 UNAME=$(shell uname)
 ifneq ($(filter CYGWIN%,$(UNAME)),)
-    ENABLE_PATH_WIN32=true
     DEFAULT_DRIVER=path.win32
+    DRIVERS+=path.win32
 else
-    ENABLE_PATH_POSIX=true
+    DRIVERS+=path
     DEFAULT_DRIVER=path
     ifneq ($(filter Linux SunOS,$(UNAME)),)
-        ENABLE_EXECVE=true
+        DRIVERS+=execve
         DEFAULT_DRIVER=execve
     endif
 endif
 
 # POSIX PATH instrumentation driver
-ifdef ENABLE_PATH_POSIX
+ifneq ($(filter path,$(DRIVERS)),)
 EXECS+=\
 	path/prepare		\
 	path/run		\
@@ -45,7 +46,7 @@ EXECS+=\
 endif
 
 # Windows PATH instrumentation driver
-ifdef ENABLE_PATH_WIN32
+ifneq ($(filter path.win32,$(DRIVERS)),)
 EXECS+=\
 	path.win32/prepare	\
 	path.win32/run		\
@@ -61,7 +62,7 @@ path.win32-clean:
 endif
 
 # libc's execve(2) replacement driver
-ifdef ENABLE_EXECVE
+ifneq ($(filter execve,$(DRIVERS)),)
 EXECS+=\
 	execve/prepare		\
 	execve/run		\
@@ -89,6 +90,15 @@ ifdef DEFAULT_DRIVER
 endif
 
 version: Makefile
-	{ echo "#!/bin/sh"; echo observe-$(VERSION); } >$@
+	echo "#!/bin/sh" 					 >$@
+	echo "echo \"observe -- a process invocation observer\"">>$@
+	echo "echo"						>>$@
+	echo "echo \"Version: $(VERSION)\""			>>$@
+	echo "echo"						>>$@
+	echo "echo Supported drivers:"				>>$@
+	for drv in $(DRIVERS); do echo "echo +$$drv"; done	>>$@
+	echo "echo"						>>$@
+	echo "echo \"Built on:\""				>>$@
+	echo "echo \"`uname -srmp`\""				>>$@
 	chmod +x $@
 
