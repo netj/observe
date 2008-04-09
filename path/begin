@@ -1,10 +1,10 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 OBSERVE_HOOKS_EXES="$OBSERVE_HOOKS/exes"
-mkdir -p "$OBSERVE_HOOKS_EXES"
+export OBSERVE_HOOKS_EXES
 
-# generate hook dir from $OBSERVE_RULE
-cat "$OBSERVE_RULE" |
+# create $OBSERVE_HOOKS_EXES
+mkdir -p "$OBSERVE_HOOKS_EXES"
 while read; do
     case "$REPLY" in
         # read a hook rule
@@ -16,8 +16,11 @@ while read; do
         # TODO: copy first and hardlink others
         for cmd in $cmds; do
             [ "$cmd" != handle ] || continue
-            ln -sfn "$OBSERVE_ROOT/path/hook" "$OBSERVE_HOOKS_EXES/$cmd"
+            ln -sfn "$OBSERVE_ROOT/path/escape" "$OBSERVE_HOOKS_EXES/$cmd"
         done
         ;;
     esac
-done
+done <"$OBSERVE_RULE"
+
+# and run given command
+exec handle "$@"

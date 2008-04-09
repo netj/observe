@@ -9,7 +9,7 @@
 #include <string.h>
 #include <errno.h>
 
-#define CMDFMT "sh.exe -c \"'%s/path.win32/hook.sh'"
+#define CMDFMT "sh.exe -c \"'%s/path.win32/escape.sh'"
 
 char *quoteapos(const char *s) {
     // TODO

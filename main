@@ -2,6 +2,7 @@
 # observe -- a process invocation observer
 # Author: Jaeho Shin <netj@sparcs.org>
 # Created: 2007-01-19
+set -e
 
 OBSERVE=`readlink -f "$0"`
 OBSERVE_ROOT=`dirname "$OBSERVE"`
@@ -24,17 +25,25 @@ if [ $# -lt 1 ]; then
 fi
 
 OBSERVE_RULE=$1; shift
-OBSERVE_HOOKS=`mktemp -d /tmp/observe.XXXXXX`
-trap "rm -rf $OBSERVE_HOOKS >&2" EXIT
+if ! [ -f "$OBSERVE_RULE" -a -r "$OBSERVE_RULE" ]; then
+    usage
+    false
+fi
 
 OBSERVE_LEVEL=$((${OBSERVE_LEVEL:-0} + 1))
+OBSERVE_HOOKS=`mktemp -d /tmp/observe.XXXXXX`
+trap "rm -rf $OBSERVE_HOOKS >&2" EXIT
 
 export OBSERVE_ROOT OBSERVE_LEVEL OBSERVE_RULE OBSERVE_HOOKS
 
 # compile OBSERVE_RULE to OBSERVE_HOOKS
 compile "$OBSERVE_RULE" "$OBSERVE_HOOKS"
 
-# run in an instrumented environment
-prepare
-run "$@"
-#TODO cleanup
+if type begin &>/dev/null; then
+    # run in an instrumented environment
+    cmd=${1:-$SHELL}; shift
+    name=`basename "$cmd"`
+    begin "$cmd" "$name" "$@"
+else
+    echo "$OBSERVE_DRIVER: driver unavailable" >&2
+fi

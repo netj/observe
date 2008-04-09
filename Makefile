@@ -1,7 +1,7 @@
 # Makefile for observe
 # Author: Jaeho Shin <netj@sparcs.org>
 # Created: 2008-04-07
-VERSION=1.0
+VERSION=1.1
 DRIVERS=
 
 EXECS=\
@@ -31,27 +31,27 @@ else
     DRIVERS+=path
     DEFAULT_DRIVER=path
     ifneq ($(filter Linux SunOS,$(UNAME)),)
-        DRIVERS+=execve
-        DEFAULT_DRIVER=execve
+        DRIVERS+=libc
+        DEFAULT_DRIVER=libc
     endif
 endif
 
 # POSIX PATH instrumentation driver
 ifneq ($(filter path,$(DRIVERS)),)
 EXECS+=\
-	path/prepare		\
-	path/run		\
-	path/hook		\
+	path/begin		\
+	path/enter		\
+	path/escape		\
 	#
 endif
 
 # Windows PATH instrumentation driver
 ifneq ($(filter path.win32,$(DRIVERS)),)
 EXECS+=\
-	path.win32/prepare	\
-	path.win32/run		\
-	path.win32/hook.exe	\
-	path.win32/hook.sh	\
+	path.win32/begin	\
+	path.win32/enter	\
+	path.win32/escape.exe	\
+	path.win32/escape.sh	\
 	#
 driver: path.win32-driver
 path.win32-driver:
@@ -61,20 +61,20 @@ path.win32-clean:
 	$(MAKE) -C path.win32 clean
 endif
 
-# libc's execve(2) replacement driver
-ifneq ($(filter execve,$(DRIVERS)),)
+# C library's execve(2) and exec*(3) replacement driver
+ifneq ($(filter libc,$(DRIVERS)),)
 EXECS+=\
-	execve/prepare		\
-	execve/run		\
-	execve/libobserve.so	\
-	execve/hook		\
+	libc/begin		\
+	libc/enter		\
+	libc/libobserve.so	\
+	libc/escape		\
 	#
-driver: execve-driver
-execve-driver:
-	$(MAKE) -C execve
-clean: execve-clean
-execve-clean:
-	$(MAKE) -C execve clean
+driver: libc-driver
+libc-driver:
+	$(MAKE) -C libc
+clean: libc-clean
+libc-clean:
+	$(MAKE) -C libc clean
 endif
 
 

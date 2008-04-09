@@ -1,0 +1,10 @@
+#!/bin/sh -e
+
+# attach OBSERVE_HOOKS_EXES to PATH
+PATH="$OBSERVE_HOOKS_EXES:$PATH"
+export PATH
+
+# discard arg0
+cmd=$1; shift 2
+
+exec "$cmd" "$@"

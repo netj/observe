@@ -9,26 +9,31 @@ mkdir -p "$hooks"
 matcher="$hooks/match"
 cat >"$matcher" <<EOF
 #!/bin/sh
-case "\$1" in
+file=\$1
+name=\$2
+case "\$name" in
 EOF
 chmod +x "$matcher"
 
 # generate matcher and hooks
 dirty=false
+# TODO: consider using asolute path
+default='enter "$@"'
 flush() {
     $dirty || return
     hook="$hooks/hook$id"
+    # TODO: compile into a simpler, faster form
     cat >"$hook" <<-EOF
 	#!/bin/sh
-	$before
-	${replace:-"\$@"}
+        (${before:-:})
+	(${replace:-$default})
 	c=\$?
-	if [ \$c -eq 0 ]; then
-	    ${success:-:}
+        if [ \$c -eq 0 ]; then
+            (${success:-:})
 	else
-	    ${failure:-:}
+            (${failure:-:})
 	fi
-	$after
+        (${after:-:})
 	exit \$c
 	EOF
     chmod +x "$hook"

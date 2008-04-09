@@ -1,10 +1,12 @@
 #!/bin/sh
 
-if hook=`"$OBSERVE_HOOKS/match" "$1"`; then
-    cmd="$OBSERVE_HOOKS/$hook"
+if hook=`"$OBSERVE_HOOKS/match" "$1" "$2"`; then
+    # hook found, let it handle
+    handler="$OBSERVE_HOOKS/$hook"
 else
-    # no matching hook, run it back in an instrumented environment
-    cmd=run
+    # no matching hook, release and run it
+# TODO: consider using asolute path
+    handler=enter
 fi
 
-exec "$cmd" "$@"
+exec "$handler" "$@"

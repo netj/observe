@@ -1,9 +1,0 @@
-#!/bin/sh
-
-# insert OBSERVE_HOOKS_EXES in front of PATH
-OBSERVE_HOOKS_EXES="$OBSERVE_HOOKS/exes"
-export OBSERVE_HOOKS_EXES
-PATH="$OBSERVE_HOOKS_EXES:$PATH"
-
-# and run given command
-exec "$@"
