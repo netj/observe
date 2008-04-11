@@ -12,17 +12,18 @@ TC=\
    system	\
    cute		\
    #
-PASSES=$(TC:%=%/passed)
+PASSES=$(TC:%=%/ok)
 
 
 .PHONY: test clean
 test: $(PASSES)
 clean:
 	rm -f $(PASSES)
+	for mf in */Makefile; do d=$${mf%/Makefile}; $(MAKE) -C $$d clean; done
 
-%/passed: %/expected %/actual
-	cd $(@D) && diff -u expected actual && touch passed
-	@echo "$(@D) PASSED"
+%/ok: %/expected %/actual
+	cd $(@D) && diff -u expected actual && touch ok
+	# $(@D) PASSED
 
 %/actual: %/run
 	[ -x driver ] || chmod +x driver
@@ -31,3 +32,5 @@ clean:
 %/run: %/run.c
 	$(CC) -o $@ $^
 
+%/run: %/Makefile
+	$(MAKE) -C $(@D)

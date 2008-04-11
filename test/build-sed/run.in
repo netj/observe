@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+PROCLOG=$PWD/actual
+export PROCLOG
+
+cd build
+../../../main ../../record-build make clean all
