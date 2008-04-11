@@ -25,6 +25,7 @@ clean:
 	@echo "$(@D) PASSED"
 
 %/actual: %/run
+	[ -x driver ] || chmod +x driver
 	cd $(@D) && ../driver ./run
 
 %/run: %/run.c

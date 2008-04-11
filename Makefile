@@ -18,7 +18,7 @@ FILES=\
 .PHONY: all test clean driver
 all: driver observe
 driver: default
-test:
+test: all
 	$(MAKE) -C test
 clean:
 	$(MAKE) -C test clean
