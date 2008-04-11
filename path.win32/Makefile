@@ -1,8 +1,9 @@
+# Makefile for Windows PATH instrumentation driver
 
-hook.exe: hook.c
-	cl.exe -o $@ $^
-
-.PHONY: clean
+.PHONY: all clean
+all: capture.exe
 clean:
-	rm -f hook.exe hook.obj
+	rm -f capture.exe *.obj
 
+capture.exe: capture.c
+	cl.exe -o $@ $^

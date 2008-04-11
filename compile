@@ -18,7 +18,7 @@ chmod +x "$matcher"
 # generate matcher and hooks
 dirty=false
 # TODO: consider using asolute path
-default='enter "$@"'
+default='"$OBSERVE_DRIVER_ROOT/release" "$@"'
 flush() {
     $dirty || return
     hook="$hooks/hook$id"

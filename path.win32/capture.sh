@@ -12,4 +12,4 @@ name=`basename "$name"`
 # search PATH
 file=`type -P "$name"`
 
-exec handle "$cmd" "$cmd" "$@"
+exec handle "$file" "$name" "$@"

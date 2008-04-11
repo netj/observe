@@ -1,4 +1,0 @@
-#!/bin/sh
-unset OBSERVE_ENABLED
-# TODO: consider using asolute path
-exec handle "$@"

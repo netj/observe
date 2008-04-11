@@ -1,7 +1,7 @@
 # Makefile for observe
 # Author: Jaeho Shin <netj@sparcs.org>
 # Created: 2008-04-07
-VERSION=1.1
+VERSION=1.2
 DRIVERS=
 
 EXECS=\
@@ -40,8 +40,8 @@ endif
 ifneq ($(filter path,$(DRIVERS)),)
 EXECS+=\
 	path/begin		\
-	path/enter		\
-	path/escape		\
+	path/release		\
+	path/capture		\
 	#
 endif
 
@@ -49,9 +49,9 @@ endif
 ifneq ($(filter path.win32,$(DRIVERS)),)
 EXECS+=\
 	path.win32/begin	\
-	path.win32/enter	\
-	path.win32/escape.exe	\
-	path.win32/escape.sh	\
+	path.win32/release	\
+	path.win32/capture.exe	\
+	path.win32/capture.sh	\
 	#
 driver: path.win32-driver
 path.win32-driver:
@@ -65,9 +65,8 @@ endif
 ifneq ($(filter libc,$(DRIVERS)),)
 EXECS+=\
 	libc/begin		\
-	libc/enter		\
-	libc/libobserve.so	\
-	libc/escape		\
+	libc/release		\
+	libc/capture.so		\
 	#
 driver: libc-driver
 libc-driver:

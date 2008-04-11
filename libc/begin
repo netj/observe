@@ -1,15 +1,10 @@
 #!/bin/sh -e
 
-OBSERVE_HOOK_SO="$OBSERVE_ROOT/libc/libobserve.so"
-export OBSERVE_HOOK_SO
+OBSERVE_CAPTURE_SO="$OBSERVE_ROOT/libc/capture.so"
+export OBSERVE_CAPTURE_SO
 
-# we need libobserve.so
-[ -x "$OBSERVE_HOOK_SO" ]
-
-# add libobserve.so to LD_PRELOAD
-LD_PRELOAD="$OBSERVE_HOOK_SO${LD_PRELOAD:+" $LD_PRELOAD"}"
-export LD_PRELOAD
+# we need capture.so
+[ -x "$OBSERVE_CAPTURE_SO" ]
 
 # and run given command
-# TODO: consider using asolute path
-exec handle "$@"
+exec "$OBSERVE_ROOT/handle" "$@"

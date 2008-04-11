@@ -1,17 +1,28 @@
-#define OBSERVE_HANDLER_NAME "escape"
-#define OBSERVE_HANDLER_PATH "/libc/" OBSERVE_HANDLER_NAME
+/*
+ * Vocabularies for observe's libc driver
+ */
 
-enum { OBSERVE_DISABLED, OBSERVE_ENABLED, OBSERVE_ENABLE };
-#define OBSERVE_FLAG_NAME "OBSERVE_ENABLED"
-#define OBSERVE_FLAG_DISABLED NULL
-#define OBSERVE_FLAG_ENABLED  "1"
-#define OBSERVE_FLAG_ENABLE   "0"
+#define OBSERVE_ROOT_VAR        "OBSERVE_ROOT"
+#define OBSERVE_CAPTURE_SO_VAR  "OBSERVE_CAPTURE_SO"
+
+#define OBSERVE_HANDLER_NAME "handle"
+#define OBSERVE_HANDLER_PATH "/" OBSERVE_HANDLER_NAME
 
 #ifdef DEBUG
 #include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
 #define debug(arg...) fprintf(stderr, arg)
+#define debugv(argv) {		\
+    char **p = (char **)argv;	\
+    while (*p != NULL)		\
+	debug(" '%s'", *p), p++;  \
+}
+#define debugh() debug("## [%6d - %6d] ", getppid(), getpid())
 #else
 #define debug(arg...)
+#define debugv(argv)
+#define debugh()
 #endif
 
 #ifndef LIBC_PATH

@@ -7,7 +7,11 @@ set -e
 OBSERVE=`readlink -f "$0"`
 OBSERVE_ROOT=`dirname "$OBSERVE"`
 : ${OBSERVE_DRIVER:=default}
-PATH="$OBSERVE_ROOT/$OBSERVE_DRIVER:$OBSERVE_ROOT:$PATH"
+OBSERVE_DRIVER_ROOT="$OBSERVE_ROOT/$OBSERVE_DRIVER"
+OBSERVE_LEVEL=$((${OBSERVE_LEVEL:-0} + 1))
+# FIXME: reduce interference
+PATH="$OBSERVE_ROOT:$PATH"
+export OBSERVE_ROOT OBSERVE_DRIVER_ROOT OBSERVE_LEVEL
 
 while getopts "v" o; do
     case "$o" in
@@ -29,21 +33,18 @@ if ! [ -f "$OBSERVE_RULE" -a -r "$OBSERVE_RULE" ]; then
     usage
     false
 fi
-
-OBSERVE_LEVEL=$((${OBSERVE_LEVEL:-0} + 1))
 OBSERVE_HOOKS=`mktemp -d /tmp/observe.XXXXXX`
 trap "rm -rf $OBSERVE_HOOKS >&2" EXIT
-
-export OBSERVE_ROOT OBSERVE_LEVEL OBSERVE_RULE OBSERVE_HOOKS
+export OBSERVE_RULE OBSERVE_HOOKS
 
 # compile OBSERVE_RULE to OBSERVE_HOOKS
 compile "$OBSERVE_RULE" "$OBSERVE_HOOKS"
 
-if type begin &>/dev/null; then
+if [ -x "$OBSERVE_DRIVER_ROOT/begin" ]; then
     # run in an instrumented environment
-    cmd=${1:-$SHELL}; shift
+    cmd=$1; shift || cmd=$SHELL
     name=`basename "$cmd"`
-    begin "$cmd" "$name" "$@"
+    "$OBSERVE_DRIVER_ROOT/begin" "$cmd" "$name" "$@"
 else
     echo "$OBSERVE_DRIVER: driver unavailable" >&2
 fi
