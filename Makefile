@@ -1,7 +1,7 @@
 # Makefile for observe
 # Author: Jaeho Shin <netj@sparcs.org>
 # Created: 2008-04-07
-VERSION=1.2
+VERSION=1.3
 DRIVERS=
 
 EXECS=\
@@ -15,10 +15,13 @@ EXECS=\
 FILES=\
 	#
 
-.PHONY: all clean driver
+.PHONY: all test clean driver
 all: driver observe
 driver: default
+test:
+	$(MAKE) -C test
 clean:
+	$(MAKE) -C test clean
 	rm -f observe version default
 
 

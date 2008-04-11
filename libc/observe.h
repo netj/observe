@@ -18,7 +18,7 @@
     while (*p != NULL)		\
 	debug(" '%s'", *p), p++;  \
 }
-#define debugh() debug("## [%6d - %6d] ", getppid(), getpid())
+#define debugh() debug("## [%5d %5d] ", getppid(), getpid())
 #else
 #define debug(arg...)
 #define debugv(argv)

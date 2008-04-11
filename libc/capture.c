@@ -4,6 +4,7 @@
 #include <string.h>
 #include <dlfcn.h>
 #include <errno.h>
+#include <sys/stat.h>
 
 // delete given token from string
 static char *strdel(char *str, const char *token, const char *delim) {
@@ -117,11 +118,17 @@ int execve(const char *path, char *const argv[], char *const envp[]) {
     *(void **) (&actual) = dlsym_libc("execve");
     if (actual == NULL)
         return -1;
+    { // check permission (usually called from exec[lv]p)
+	struct stat st;
+	if (stat(path, &st) != 0 || st.st_mode & S_IEXEC == 0)
+	    return -1;
+    }
     debugh(); debug(" execve(%s,", path); debugv(argv); debug(")\n");
     // pass everything to our handler
-    int r = actual(observe_handler(), newargv(path, argv), reset_LD_PRELOAD(envp));
+    if (actual(observe_handler(), newargv(path, argv), reset_LD_PRELOAD(envp)) == 0)
+	return 0;
     debugh(); debug(" ! execve error\n");
-    return r;
+    return -1;
 }
 
 // execvp hook
@@ -132,9 +139,10 @@ int execvp(const char *file, char *const argv[]) {
         return -1;
     debugh(); debug(" execvp(%s,", file); debugv(argv); debug(")\n");
     reset_LD_PRELOAD(NULL);
-    int r = actual(observe_handler(), newargv(file, argv));
+    if (actual(observe_handler(), newargv(file, argv)) == 0)
+	return 0;
     debugh(); debug(" ! execvp error\n");
-    return r;
+    return -1;
 }
 
 // execv hook
@@ -145,9 +153,10 @@ int execv(const char *path, char *const argv[]) {
         return -1;
     debugh(); debug(" execv (%s,", path); debugv(argv); debug(")\n");
     reset_LD_PRELOAD(NULL);
-    int r = actual(observe_handler(), newargv(path, argv));
+    if (actual(observe_handler(), newargv(path, argv)) == 0)
+	return 0;
     debugh(); debug(" ! execv error\n");
-    return r;
+    return -1;
 }
 
 // TODO: execle hook

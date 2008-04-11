@@ -1,0 +1,11 @@
+#!/bin/sh -e
+# Test driver for observe
+driver=`readlink -f "$0"`
+testdir=`dirname "$driver"`
+
+[ -x run ]
+
+PROCLOG="`pwd`/actual"
+export PROCLOG
+
+"$testdir/../main" "$testdir/rules" ./run  >/dev/null

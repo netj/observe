@@ -1,0 +1,2 @@
+#!/bin/sh
+env env env sh -c "env env env ls; env sh -c 'date'; sh -c 'env id'"

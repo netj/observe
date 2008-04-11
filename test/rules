@@ -1,0 +1,4 @@
+#!/usr/bin/env observe
+hook *:
+    before=shift; echo "$@ {" >>$PROCLOG
+    after=echo "}" >>$PROCLOG

@@ -1,4 +1,6 @@
 # Makefile for C library instrumentation driver
+# Author: Jaeho Shin <netj@sparcs.org>
+# Created: 2008-04-08
 
 .PHONY: all clean
 all: capture.so release
@@ -12,11 +14,11 @@ CFLAGS+=-g -DDEBUG
 endif
 
 
-observe.h: Makefile
-
-release.o: observe.h
+release.o: observe.h Makefile
 release: release.o
 	$(CC) -o $@ $^
+
+capture.o: observe.h Makefile
 
 # OS specific stuffs
 UNAME=$(shell uname)
@@ -25,8 +27,13 @@ UNAME=$(shell uname)
 ifneq ($(filter Linux,$(UNAME)),)
 CFLAGS+=-Wall
 LIBC_PATH=$(shell ls /lib/libc.so* | sort -r | head -1)
-linux.o: observe.h
-capture.so: linux.o
+capture.so: capture.o
 	$(CC) -o $@ -shared -rdynamic $(LDFLAGS) $^ -ldl
 endif
 
+# Solaris
+ifneq ($(filter SunOS,$(UNAME)),)
+LIBC_PATH=$(shell ls /lib/libc.so* | sort -r | head -1)
+capture.so: capture.o
+	$(CC) -o $@ -shared $(LDFLAGS) $^ -ldl
+endif
