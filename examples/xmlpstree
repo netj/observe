@@ -1,0 +1,10 @@
+#!/usr/bin/env observe
+# An observe rule that captures process invocations in XML format
+# Author: Jaeho Shin <netj@sparcs.org>
+# Created: 2008-04-11
+
+hook *:
+    replace= (echo '<proc pid="'$$'">'; echo '<cmd>'"$2"'</cmd>'; shift 2; for a in "$@"; do echo "<arg>`sed -e 's/\&/\&amp;/g; s/</\&lt;/g' <<<"$a"`</arg>"; done); exec "$OBSERVE_DRIVER_ROOT/release" "$@"
+    after=   echo '</proc>'
+
+# vim:ft=sh
