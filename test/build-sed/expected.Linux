@@ -1,0 +1,24 @@
+cd lib
+gcc -DHAVE_CONFIG_H -I. -I. -I.. -I../lib -I../intl -I.. -I../lib -I../intl -g -O2 -MT getopt1.o -MD -MP -MF .deps/getopt1.Tpo -c -o getopt1.o getopt1.c
+cd lib
+gcc -DHAVE_CONFIG_H -I. -I. -I.. -I../lib -I../intl -I.. -I../lib -I../intl -g -O2 -MT getopt.o -MD -MP -MF .deps/getopt.Tpo -c -o getopt.o getopt.c
+cd lib
+gcc -DHAVE_CONFIG_H -I. -I. -I.. -I../lib -I../intl -I.. -I../lib -I../intl -g -O2 -MT utils.o -MD -MP -MF .deps/utils.Tpo -c -o utils.o utils.c
+cd lib
+gcc -DHAVE_CONFIG_H -I. -I. -I.. -I../lib -I../intl -I.. -I../lib -I../intl -g -O2 -MT regex.o -MD -MP -MF .deps/regex.Tpo -c -o regex.o regex.c
+cd lib
+ar cru libsed.a getopt1.o getopt.o utils.o regex.o
+cd sed
+gcc -DHAVE_CONFIG_H -I. -I. -I.. -I../lib -I../intl -I.. -I../lib -I../intl -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT sed.o -MD -MP -MF .deps/sed.Tpo -c -o sed.o sed.c
+cd sed
+gcc -DHAVE_CONFIG_H -I. -I. -I.. -I../lib -I../intl -I.. -I../lib -I../intl -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT compile.o -MD -MP -MF .deps/compile.Tpo -c -o compile.o compile.c
+cd sed
+gcc -DHAVE_CONFIG_H -I. -I. -I.. -I../lib -I../intl -I.. -I../lib -I../intl -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT execute.o -MD -MP -MF .deps/execute.Tpo -c -o execute.o execute.c
+cd sed
+gcc -DHAVE_CONFIG_H -I. -I. -I.. -I../lib -I../intl -I.. -I../lib -I../intl -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT regexp.o -MD -MP -MF .deps/regexp.Tpo -c -o regexp.o regexp.c
+cd sed
+gcc -DHAVE_CONFIG_H -I. -I. -I.. -I../lib -I../intl -I.. -I../lib -I../intl -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT fmt.o -MD -MP -MF .deps/fmt.Tpo -c -o fmt.o fmt.c
+cd sed
+gcc -DHAVE_CONFIG_H -I. -I. -I.. -I../lib -I../intl -I.. -I../lib -I../intl -DLOCALEDIR="/usr/local/share/locale" -g -O2 -MT mbcs.o -MD -MP -MF .deps/mbcs.Tpo -c -o mbcs.o mbcs.c
+cd sed
+gcc -g -O2 -o sed sed.o compile.o execute.o regexp.o fmt.o mbcs.o ../lib/libsed.a

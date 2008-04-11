@@ -1,7 +1,8 @@
 #!/bin/sh -e
 
-PROCLOG=$PWD/actual
-export PROCLOG
-
 cd build
-../../../main ../../record-build make clean all
+
+BASEDIR=$PWD
+export BASEDIR
+
+make clean all

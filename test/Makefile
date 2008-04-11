@@ -16,10 +16,13 @@ PASSES=$(TC:%=%/ok)
 
 
 .PHONY: test clean
-test: $(PASSES)
+test: ../observe $(PASSES)
 clean:
 	rm -f $(PASSES)
 	for mf in */Makefile; do d=$${mf%/Makefile}; $(MAKE) -C $$d clean; done
+
+../observe:
+	$(MAKE) -C ..
 
 %/ok: %/expected %/actual
 	cd $(@D) && diff -u expected actual && touch ok
@@ -32,5 +35,7 @@ clean:
 %/run: %/run.c
 	$(CC) -o $@ $^
 
-%/run: %/Makefile
-	$(MAKE) -C $(@D)
+
+%/run %/expected: %/Makefile
+	$(MAKE) -C $(@D) $(@F)
+

@@ -1,26 +1,36 @@
+GNUFTP=http://ftp.kaist.ac.kr/pub/gnu
 NAME=sed-4.1.5
 TARBALL=$(NAME).tar.gz
-GNUFTP=http://ftp.kaist.ac.kr/pub/gnu
 
-run: build build/config.status
-	cp -f run.in $@
+
+all: run expected
+
+run: rule build build/config.status
+	cp run.in $@
 	chmod +x $@
 
-.PHONY: clean distclean
-clean:
-	rm -rf $(NAME) build run
-distclean:
-	rm -f $(TARBALL)
+expected: expected.$(shell uname)
+	ln -s $< $@
 
-build/config.status:
-	cd build && ./configure
+rule:
+	ln -s ../record-build $@
 
 build: $(NAME)
 	ln -s $< build
+
+build/config.status:
+	cd build && ./configure
 
 $(NAME): $(TARBALL)
 	gunzip <$< | tar xf -
 
 $(TARBALL):
 	wget $(GNUFTP)/sed/$@
+
+
+.PHONY: clean distclean
+clean:
+	rm -rf $(NAME) build rule expected run
+distclean:
+	rm -f $(TARBALL)
 

@@ -1,3 +1,3 @@
 #!/usr/bin/env observe
 hook gcc cc ld ar:
-    success=shift; echo "cd $PWD; $@" >>$PROCLOG
+    success=shift; { echo "cd ${PWD#$BASEDIR/}"; echo "$*"; } >>$PROCLOG

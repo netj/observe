@@ -8,4 +8,8 @@ testdir=`dirname "$driver"`
 PROCLOG="`pwd`/actual"
 export PROCLOG
 
-"$testdir/../main" "$testdir/rules" ./run  >/dev/null
+rule="$testdir/record-all"
+
+[ -f rule ] && rule=./rule
+
+"$testdir/../main" "$rule" ./run
