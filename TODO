@@ -1,0 +1,9 @@
+* remove PATH=$OBSERVE_ROOT:$PATH in main
+* rename release -> observe
+* let user call observe in replace= action
+
+* rule file syntax: indentation block
+* before:, after:
+
+* support self monitoring? (recursive observe)
+  env var handling must be done carefully

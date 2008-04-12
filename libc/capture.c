@@ -120,7 +120,7 @@ int execve(const char *path, char *const argv[], char *const envp[]) {
         return -1;
     { // check permission (usually called from exec[lv]p)
 	struct stat st;
-	if (stat(path, &st) != 0 || st.st_mode & S_IEXEC == 0)
+	if (stat(path, &st) != 0 || (st.st_mode & S_IEXEC) == 0)
 	    return -1;
     }
     debugh(); debug(" execve(%s,", path); debugv(argv); debug(")\n");

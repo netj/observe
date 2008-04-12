@@ -1,0 +1,25 @@
+Author: Jaeho Shin <netj@sparcs.org>
+Title: Memo on how observe observes process executions
+
+<Work In Progress>
+
+
+= State Transitions =
+
+== States ==
+<initial> ::
+    initial state
+<handling> ::
+    captured an exec and handling it
+<hooking> ::
+    found a matching hook and running its actions
+<observing> ::
+    letting process run and waiting for capturing an exec
+
+== Transitions ==
+<initial>       -[ begin ]->    <handling>
+<handling>      -[release]->   <observing>
+<handling>      -[ match ]->     <hooking>
+<hooking>       -[release]->   <observing>
+<observing>     -[capture]->    <handling>
+
