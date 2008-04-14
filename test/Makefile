@@ -19,7 +19,7 @@ PASSES=$(TC:%=%/ok)
 test: ../observe $(PASSES)
 clean:
 	rm -f $(PASSES)
-	for mf in */Makefile; do d=$${mf%/Makefile}; $(MAKE) -C $$d clean; done
+	for mf in */Makefile; do d=`dirname "$$mf"`; $(MAKE) -C $$d clean; done
 
 ../observe:
 	$(MAKE) -C ..
