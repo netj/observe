@@ -1,7 +1,7 @@
 # Makefile for observe
 # Author: Jaeho Shin <netj@sparcs.org>
 # Created: 2008-04-07
-VERSION=1.3
+VERSION=1.4
 DRIVERS=
 
 EXECS=\

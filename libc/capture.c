@@ -1,6 +1,7 @@
 #include "observe.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include <string.h>
 #include <dlfcn.h>
 #include <errno.h>
@@ -159,6 +160,50 @@ int execv(const char *path, char *const argv[]) {
     return -1;
 }
 
-// TODO: execle hook
-// TODO: execlp hook
-// TODO: execl hook
+#define convert2vector(path, argv) {                        \
+    int argc = 0;                                           \
+    int i;                                                  \
+    while (va_arg(ap, char *) != NULL)                      \
+        argc++;                                             \
+    va_end(ap);                                             \
+    argv = (char **) malloc((argc + 1) * sizeof(char *));   \
+    i = 0;                                                  \
+    va_start(ap, arg);                                      \
+    argv[i++] = (char *) arg;                               \
+    while ((argv[i++] = va_arg(ap, char *)) != NULL)        \
+        debug(argv[i-1]);                                   \
+    argv[i] = NULL;                                         \
+}
+
+// execle hook
+int execle(const char *path, const char *arg, ...) {
+    char **envp;
+    char **argv;
+    va_list ap;
+    va_start(ap, arg);
+    convert2vector(arg, argv);
+    envp = va_arg(ap, char **);
+    va_end(ap);
+    return execve(path, argv, envp);
+}
+
+// execlp hook
+int execlp(const char *file, const char *arg, ...) {
+    char **argv;
+    va_list ap;
+    va_start(ap, arg);
+    convert2vector(file, argv);
+    va_end(ap);
+    return execvp(file, argv);
+}
+
+// execl hook
+int execl(const char *path, const char *arg, ...) {
+    char **argv;
+    va_list ap;
+    va_start(ap, arg);
+    convert2vector(path, argv);
+    va_end(ap);
+    return execv(path, argv);
+}
+
