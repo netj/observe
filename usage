@@ -1,6 +1,6 @@
 #!/bin/sh
-cat <<-EOF
-observe -- a process invocation observer
+cat <<EOF
+Observe `cat "$OBSERVE_ROOT/version.number"`
 Usage:
   observe <hook-file> <command>
 

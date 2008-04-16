@@ -10,10 +10,15 @@ EXECS=\
 	handle			\
 	usage			\
 	version			\
+	license			\
 	default			\
 	#
 FILES=\
-	#
+      COPYING			\
+      version.number		\
+      version.system		\
+      version.drivers		\
+      #
 
 .PHONY: all test clean driver
 all: driver observe
@@ -22,14 +27,14 @@ test: all
 	$(MAKE) -C test
 clean:
 	$(MAKE) -C test clean
-	rm -f observe version default
+	rm -f observe default version.*
 
 
 # choose platform specific drivers
 UNAME=$(shell uname)
 ifneq ($(filter CYGWIN%,$(UNAME)),)
-    DEFAULT_DRIVER=path.win32
     DRIVERS+=path.win32
+    DEFAULT_DRIVER=path.win32
 else
     DRIVERS+=path
     DEFAULT_DRIVER=path
@@ -91,16 +96,10 @@ ifdef DEFAULT_DRIVER
 	ln -sfn $(DEFAULT_DRIVER) default
 endif
 
-version: Makefile
-	echo "#!/bin/sh" 					 >$@
-	echo "echo \"observe -- a process invocation observer\"">>$@
-	echo "echo"						>>$@
-	echo "echo \"Version: $(VERSION)\""			>>$@
-	echo "echo"						>>$@
-	echo "echo Supported drivers:"				>>$@
-	for drv in $(DRIVERS); do echo "echo +$$drv"; done	>>$@
-	echo "echo"						>>$@
-	echo "echo \"Built on:\""				>>$@
-	echo "echo \"`uname -srmp`\""				>>$@
-	chmod +x $@
+version.number: Makefile
+	echo "$(VERSION)" >$@
+version.drivers: Makefile
+	for drv in $(DRIVERS); do echo "$$drv"; done >$@
+version.system: Makefile
+	uname -srmp >$@
 

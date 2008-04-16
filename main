@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# observe -- a process invocation observer
+# Observe -- a process invocation observer
 # Author: Jaeho Shin <netj@sparcs.org>
 # Created: 2007-01-19
 set -e
@@ -13,14 +13,23 @@ OBSERVE_LEVEL=$((${OBSERVE_LEVEL:-0} + 1))
 PATH="$OBSERVE_ROOT:$PATH"
 export OBSERVE_ROOT OBSERVE_DRIVER_ROOT OBSERVE_LEVEL
 
+version=
 while getopts "v" o; do
     case "$o" in
         v)
-        version; exit
+        case "$verprg" in
+            "")      verprg=version ;;
+            version) verprg=license ;;
+        esac
         ;;
     esac
 done
 shift $(($OPTIND - 1))
+
+if [ -n "$verprg" ]; then
+    $verprg
+    exit
+fi
 
 # show usage
 if [ $# -lt 1 ]; then
