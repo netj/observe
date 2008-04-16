@@ -14,7 +14,6 @@ EXECS=\
 	default			\
 	#
 FILES=\
-      COPYING			\
       version.number		\
       version.system		\
       version.drivers		\
