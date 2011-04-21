@@ -1,6 +1,6 @@
 #!/bin/sh -e
 
-OBSERVE_CAPTURE_SO="$OBSERVE_ROOT/libc/capture.so"
+OBSERVE_CAPTURE_SO="$OBSERVE_ROOT/drivers/libc/capture.so"
 export OBSERVE_CAPTURE_SO
 
 # we need capture.so

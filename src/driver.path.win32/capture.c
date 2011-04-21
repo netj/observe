@@ -9,7 +9,7 @@
 #include <string.h>
 #include <errno.h>
 
-#define CMDFMT "sh.exe -c \"'%s/path.win32/capture.sh'"
+#define CMDFMT "sh.exe -c \"'%s/drivers/path.win32/capture.sh'"
 
 char *quoteapos(const char *s) {
     // TODO

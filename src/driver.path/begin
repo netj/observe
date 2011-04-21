@@ -16,7 +16,7 @@ while read; do
         # TODO: copy first and hardlink others
         for cmd in $cmds; do
             [ "$cmd" != handle ] || continue
-            ln -sfn "$OBSERVE_ROOT/path/capture" "$OBSERVE_HOOKS_EXES/$cmd"
+            ln -sfn "$OBSERVE_ROOT/drivers/path/capture" "$OBSERVE_HOOKS_EXES/$cmd"
         done
         ;;
     esac
