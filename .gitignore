@@ -1,6 +1,7 @@
 .DS_Store
 .*.swp
 
-observe
-default
-version.*
+.build
+/.stage
+
+/observe-*.sh

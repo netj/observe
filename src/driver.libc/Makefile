@@ -1,12 +1,13 @@
-# Makefile for C library instrumentation driver
+# Makefile for C library's execve(2) and exec*(3) replacement driver
 # Author: Jaeho Shin <netj@sparcs.org>
 # Created: 2008-04-08
 
-.PHONY: all clean
+.PHONY: all clean install
 all: capture.so release
 clean:
 	rm -f capture.so release *.o
-
+install: all
+	cp -f begin release capture.so "$(DEST)"
 
 CFLAGS+=-I. -fPIC -DLIBC_PATH='"$(LIBC_PATH)"'
 ifdef DEBUG

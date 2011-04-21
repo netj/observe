@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -e
+mkdir -p .build
+
+# determine platform dependent drivers
+drivers=()
+case `uname` in
+    CYGWIN) drivers+=(path.win32) ;;
+    Linux|SunOS) drivers+=(libc path) ;;
+    *) drivers+=(path) ;;
+esac
+
+# build each driver
+for d in "${drivers[@]}"; do
+    mkdir -p ".build/drivers/$d"
+    make -C "driver.$d" install DEST="../.build/drivers/$d/"
+done
+# default driver
+ln -sfn "${drivers[0]}" .build/drivers/default 
+
+# version info
+echo "$PACKAGEVERSION (`determine-package-version`)" >.build/version.number
+for d in "${drivers[@]}"; do echo "$d"; done >.build/version.drivers
+uname -srmp >.build/version.system
